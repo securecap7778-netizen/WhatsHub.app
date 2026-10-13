@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>WhatsHub Official · Download</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e8eef8;
+  --bg2:#dfe8f6;
+  --clay:#f4f7fc;
+  --shadow:8px 8px 20px #c5d0e0, -8px -8px 20px #ffffff;
+  --shadow-in:inset 4px 4px 10px #c5d0e0, inset -4px -4px 10px #ffffff;
+  --green:#16a34a;
+  --green2:#22c55e;
+  --teal:#0d9488;
+  --text:#1e293b;
+  --muted:#64748b;
+  --line:rgba(148,163,184,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:"Plus Jakarta Sans",system-ui,sans-serif;
+  background:linear-gradient(160deg,var(--bg) 0%,var(--bg2) 50%,#e0e7ff 100%);
+  color:var(--text);
+  min-height:100vh;
+  line-height:1.55;
+}
+.wrap{max-width:480px;margin:0 auto;padding:28px 18px 48px}
+/* clay card */
+.clay{
+  background:var(--clay);
+  border-radius:28px;
+  box-shadow:var(--shadow);
+  border:1px solid rgba(255,255,255,.7);
+}
+.hero{
+  text-align:center;
+  padding:36px 24px 28px;
+  margin-bottom:18px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:"";
+  position:absolute;inset:-40% -20% auto;
+  height:70%;
+  background:radial-gradient(circle at 50% 80%,rgba(34,197,94,.18),transparent 60%);
+  pointer-events:none;
+}
+.badge-top{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11px;font-weight:700;color:var(--teal);
+  background:rgba(13,148,136,.1);
+  padding:6px 12px;border-radius:99px;
+  margin-bottom:18px;
+  box-shadow:var(--shadow-in);
+}
+.dp-wrap{
+  width:110px;height:110px;margin:0 auto 16px;
+  border-radius:50%;
+  padding:6px;
+  background:linear-gradient(145deg,#fff,#e2e8f0);
+  box-shadow:var(--shadow);
+  position:relative;
+}
+.dp-wrap img,.dp-wrap .ph{
+  width:100%;height:100%;border-radius:50%;object-fit:cover;
+  background:linear-gradient(135deg,var(--teal),#0f766e);
+  display:grid;place-items:center;color:#fff;font-size:40px;font-weight:800;
+}
+.verified{
+  position:absolute;right:2px;bottom:2px;
+  width:28px;height:28px;border-radius:50%;
+  background:#2196F3;color:#fff;
+  display:grid;place-items:center;
+  font-size:14px;font-weight:900;
+  border:3px solid var(--clay);
+  box-shadow:0 2px 8px rgba(33,150,243,.4);
+}
+h1{
+  font-size:26px;font-weight:800;
+  color:var(--green);
+  letter-spacing:-.03em;
+  margin-bottom:6px;
+}
+.version{
+  font-size:13px;font-weight:600;color:var(--muted);
+  margin-bottom:10px;
+}
+.stats{
+  display:flex;justify-content:center;gap:18px;
+  margin:14px 0 6px;
+}
+.stat{
+  text-align:center;
+  padding:10px 16px;
+  border-radius:16px;
+  box-shadow:var(--shadow-in);
+  min-width:90px;
+}
+.stat b{display:block;font-size:18px;font-weight:800;color:var(--text)}
+.stat span{font-size:11px;color:var(--muted);font-weight:600}
+/* download */
+.dl-card{padding:22px 20px;margin-bottom:18px}
+.dl-btn{
+  width:100%;
+  border:0;cursor:pointer;
+  padding:16px 20px;
+  border-radius:18px;
+  font-family:inherit;font-size:16px;font-weight:800;
+  color:#fff;
+  background:linear-gradient(135deg,var(--green2),var(--green));
+  box-shadow:0 8px 24px rgba(22,163,74,.35), var(--shadow-in);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:transform .15s,opacity .15s;
+}
+.dl-btn:active{transform:scale(.98)}
+.dl-btn:disabled{opacity:.7;cursor:wait}
+.progress-wrap{
+  display:none;margin-top:16px;
+}
+.progress-wrap.show{display:block}
+.progress-bar{
+  height:10px;border-radius:99px;
+  background:#e2e8f0;
+  box-shadow:var(--shadow-in);
+  overflow:hidden;
+}
+.progress-bar i{
+  display:block;height:100%;width:0%;
+  background:linear-gradient(90deg,var(--green2),var(--teal));
+  border-radius:99px;
+  transition:width .15s linear;
+}
+.progress-meta{
+  display:flex;justify-content:space-between;
+  margin-top:8px;font-size:12px;font-weight:600;color:var(--muted);
+}
+.file-info{
+  text-align:center;margin-top:12px;
+  font-size:12px;color:var(--muted);font-weight:500;
+}
+/* sections */
+.section{padding:22px 20px;margin-bottom:16px}
+.section h2{
+  font-size:15px;font-weight:800;
+  margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.section h2 .dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 0 4px rgba(34,197,94,.2);
+}
+.section p,.section li{
+  font-size:13.5px;color:var(--muted);font-weight:500;
+}
+.section p{margin-bottom:10px}
+.section ul{padding-left:18px}
+.section li{margin-bottom:6px}
+.feat-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;
+}
+.feat{
+  padding:14px 12px;border-radius:16px;
+  box-shadow:var(--shadow-in);
+  font-size:12px;font-weight:600;color:var(--text);
+}
+.feat span{display:block;font-size:18px;margin-bottom:4px}
+.privacy-box{
+  margin-top:10px;padding:14px;
+  border-radius:16px;
+  box-shadow:var(--shadow-in);
+  font-size:12.5px;color:var(--muted);
+}
+.privacy-box b{color:var(--text)}
+.footer{
+  text-align:center;padding:18px 8px;
+  font-size:12px;color:var(--muted);font-weight:500;
+}
+.footer b{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="clay hero">
+    <div class="badge-top">✓ Official Page</div>
+    <div class="dp-wrap">
+      <img id="dp" src="https://i.ibb.co/hFCZ1Z6y/ic-launcher.png" alt="WhatsHub Official"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+      <div class="ph" style="display:none">W</div>
+      <div class="verified" title="Verified">✓</div>
+    </div>
+    <h1>WhatsHub Official</h1>
+    <div class="version">Version <span id="app-version">V1.5</span></div>
+    <div class="stats">
+      <div class="stat">
+        <b id="dl-count">—</b>
+        <span>Downloads</span>
+      </div>
+      <div class="stat">
+        <b id="app-size">—</b>
+        <span>APK Size</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- DOWNLOAD -->
+  <section class="clay dl-card">
+    <button class="dl-btn" id="btn-dl" onclick="startDownload()">
+      <span>⬇</span> Download WhatsHub Official
+    </button>
+    <div class="progress-wrap" id="prog-wrap">
+      <div class="progress-bar"><i id="prog-bar"></i></div>
+      <div class="progress-meta">
+        <span id="prog-pct">0%</span>
+        <span id="prog-speed">—</span>
+        <span id="prog-mb">—</span>
+      </div>
+    </div>
+    <p class="file-info" id="file-info">Safe APK · Android · Direct download</p>
+  </section>
+
+  <!-- INTRO -->
+  <section class="clay section">
+    <h2><span class="dot"></span> Introduction</h2>
+    <p>
+      <b>WhatsHub</b> is a secure, modern messaging app for private and group chats.
+      Send texts, photos and voice notes with a clean WhatsApp-style experience —
+      built for speed, privacy and real-time connection.
+    </p>
+    <p>
+      This is the <b>official download page</b> for WhatsHub. Always download from here
+      to get the genuine app and updates.
+    </p>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="clay section">
+    <h2><span class="dot"></span> Features</h2>
+    <div class="feat-grid">
+      <div class="feat"><span>💬</span> Private & group chat</div>
+      <div class="feat"><span>📷</span> Photos & voice notes</div>
+      <div class="feat"><span>✓ </span> Verified accounts</div>
+      <div class="feat"><span>🔔</span> Instant notifications</div>
+      <div class="feat"><span>🛡️</span> Block & report tools</div>
+      <div class="feat"><span>🔒</span> Two-step verification</div>
+      <div class="feat"><span>👥</span> Official Contact us</div>
+      <div class="feat"><span>🌙</span> Day / Night mode</div>
+    </div>
+    <p style="margin-top:14px">
+      <b>Banned accounts:</b> Users who break the rules may be restricted or banned.
+      A banned account can only contact <b>WhatsHub Official</b> for support.
+    </p>
+  </section>
+
+  <!-- PRIVACY -->
+  <section class="clay section">
+    <h2><span class="dot"></span> Privacy</h2>
+    <p>We collect only what is needed to run the service:</p>
+    <div class="privacy-box">
+      <b>Phone number</b> — used to create your account and sign in.<br><br>
+      <b>Profile name & photo</b> — shown to people you chat with.<br><br>
+      <b>Messages & media</b> — stored to deliver chats across devices.<br><br>
+      <b>Last seen / online status</b> — shown to your contacts when available.<br><br>
+      <b>Device date & time</b> — used for message timestamps and security checks.<br><br>
+      We do <b>not</b> sell your data. Report abuse anytime from the app. Official support is available inside WhatsHub via <b>Contact us</b>.
+    </div>
+  </section>
+
+  <footer class="footer">
+    <b>WhatsHub Official</b> · Safe download page<br>
+    © <span id="year"></span> · All rights reserved
+  </footer>
+</div>
+
+<script>
+/**
+ * CONFIG — yahan apna APK link / version set karein
+ * APK ko apni hosting / GitHub Releases / Firebase Storage par rakhein
+ */
+const CONFIG = {
+  appName: "WhatsHub Official",
+  version: "V1.5",
+  // Sirf yeh naam / paths — assets se check
+  apkFileName: "WhatsHub Official.apk",
+  apkPaths: [
+    "assets/WhatsHub Official.apk",
+    "assets/WhatsHub%20Official.apk",
+    "./assets/WhatsHub Official.apk",
+    "WhatsHub Official.apk",
+    "./WhatsHub Official.apk"
+  ],
+  firebaseDb: "https://waqar-trader-default-rtdb.firebaseio.com",
+  dpUrl: "https://i.ibb.co/hFCZ1Z6y/ic-launcher.png",
+  fallbackSizeMB: 0,
+  resolvedApkUrl: null,
+  _bytes: 0
+};
+
+document.getElementById("year").textContent = new Date().getFullYear();
+document.getElementById("app-version").textContent = CONFIG.version;
+
+// DP from CONFIG (img already in HTML)
+if (CONFIG.dpUrl) {
+  const img = document.getElementById("dp");
+  if (img && img.tagName === "IMG") img.src = CONFIG.dpUrl;
+}
+
+/** Assets se APK dhundo — sirf exact naam "WhatsHub Official.apk" */
+async function findApkInAssets() {
+  for (const path of CONFIG.apkPaths) {
+    try {
+      const h = await fetch(path, { method: "HEAD", cache: "no-store" });
+      if (h.ok) {
+        const len = Number(h.headers.get("content-length") || 0);
+        return { url: path, bytes: len };
+      }
+    } catch (e) {}
+    // Some hosts block HEAD — try GET range
+    try {
+      const h = await fetch(path, {
+        method: "GET",
+        headers: { Range: "bytes=0-0" },
+        cache: "no-store"
+      });
+      if (h.ok || h.status === 206) {
+        const cr = h.headers.get("content-range");
+        let len = Number(h.headers.get("content-length") || 0);
+        if (cr && cr.includes("/")) {
+          const total = Number(cr.split("/").pop());
+          if (total > 0) len = total;
+        }
+        return { url: path, bytes: len };
+      }
+    } catch (e) {}
+  }
+  return null;
+}
+
+async function loadStats() {
+  try {
+    const r = await fetch(CONFIG.firebaseDb + "/config/downloads.json");
+    const n = await r.json();
+    document.getElementById("dl-count").textContent = formatCount(n || 0);
+  } catch (e) {
+    document.getElementById("dl-count").textContent = "—";
+  }
+
+  const found = await findApkInAssets();
+  const btn = document.getElementById("btn-dl");
+  const info = document.getElementById("file-info");
+  if (found) {
+    CONFIG.resolvedApkUrl = found.url;
+    CONFIG._bytes = found.bytes || 0;
+    if (found.bytes > 0) {
+      document.getElementById("app-size").textContent = (found.bytes / (1024 * 1024)).toFixed(1) + " MB";
+    } else {
+      document.getElementById("app-size").textContent = "Ready";
+    }
+    info.textContent = "Found: " + CONFIG.apkFileName + " · Ready to download";
+    btn.disabled = false;
+  } else {
+    CONFIG.resolvedApkUrl = null;
+    document.getElementById("app-size").textContent = "—";
+    info.textContent = "APK not found in assets · Place "" + CONFIG.apkFileName + "" in /assets folder";
+    btn.disabled = true;
+    btn.innerHTML = "<span>⚠</span> APK not available";
+  }
+}
+function formatCount(n) {
+  n = Number(n) || 0;
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
+  return String(n);
+}
+loadStats();
+
+async function bumpDownload() {
+  try {
+    const r = await fetch(CONFIG.firebaseDb + "/config/downloads.json");
+    let n = await r.json();
+    n = (Number(n) || 0) + 1;
+    await fetch(CONFIG.firebaseDb + "/config/downloads.json", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(n)
+    });
+    document.getElementById("dl-count").textContent = formatCount(n);
+  } catch (e) {}
+}
+
+async function startDownload() {
+  const btn = document.getElementById("btn-dl");
+  const wrap = document.getElementById("prog-wrap");
+  const bar = document.getElementById("prog-bar");
+  const pct = document.getElementById("prog-pct");
+  const spd = document.getElementById("prog-speed");
+  const mb = document.getElementById("prog-mb");
+  const info = document.getElementById("file-info");
+
+  // Always re-check assets before download
+  info.textContent = "Checking assets for " + CONFIG.apkFileName + "…";
+  btn.disabled = true;
+  const found = await findApkInAssets();
+  if (!found || !found.url) {
+    CONFIG.resolvedApkUrl = null;
+    info.textContent = "Download blocked · \"" + CONFIG.apkFileName + "\" not found in assets";
+    btn.disabled = true;
+    btn.innerHTML = "<span>⚠</span> APK not available";
+    alert("WhatsHub Official.apk assets folder mein nahi mili.\\n\\nFile path: assets/WhatsHub Official.apk");
+    return;
+  }
+  CONFIG.resolvedApkUrl = found.url;
+  CONFIG._bytes = found.bytes || 0;
+
+  btn.innerHTML = "<span>⏳</span> Downloading…";
+  wrap.classList.add("show");
+  bar.style.width = "0%";
+  pct.textContent = "0%";
+  spd.textContent = "—";
+  mb.textContent = "0 MB";
+  info.textContent = "Downloading " + CONFIG.apkFileName + "…";
+
+  const t0 = performance.now();
+  try {
+    const res = await fetch(found.url, { cache: "no-store" });
+    if (!res.ok) throw new Error("File not found (" + res.status + ")");
+
+    const total = Number(res.headers.get("content-length")) || CONFIG._bytes || 0;
+    const reader = res.body && res.body.getReader ? res.body.getReader() : null;
+
+    if (!reader) {
+      const blob = await res.blob();
+      finishBlob(blob, t0);
+      return;
+    }
+
+    const chunks = [];
+    let received = 0;
+    let lastT = t0;
+    let lastBytes = 0;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      received += value.length;
+      const now = performance.now();
+      const p = total ? Math.min(100, (received / total) * 100) : 0;
+      bar.style.width = (total ? p : Math.min(99, received / 50000)).toFixed(1) + "%";
+      pct.textContent = (total ? p.toFixed(0) : "…") + "%";
+      const mbGot = received / (1024 * 1024);
+      const mbTot = total / (1024 * 1024);
+      mb.textContent = total
+        ? mbGot.toFixed(1) + " / " + mbTot.toFixed(1) + " MB"
+        : mbGot.toFixed(1) + " MB";
+      if (now - lastT > 250) {
+        const speed = ((received - lastBytes) / ((now - lastT) / 1000)) / (1024 * 1024);
+        spd.textContent = speed.toFixed(1) + " MB/s";
+        lastT = now;
+        lastBytes = received;
+      }
+    }
+
+    const blob = new Blob(chunks, { type: "application/vnd.android.package-archive" });
+    finishBlob(blob, t0);
+  } catch (e) {
+    info.textContent = "Download failed · " + (e.message || "error");
+    btn.disabled = false;
+    btn.innerHTML = "<span>⬇</span> Download WhatsHub Official";
+    alert("Download nahi hui.\\nAssets mein \"" + CONFIG.apkFileName + "\" check karein.\\n" + (e.message || ""));
+  }
+
+  function finishBlob(blob, start) {
+    const sec = (performance.now() - start) / 1000;
+    const sizeMB = blob.size / (1024 * 1024);
+    const speed = sec > 0 ? sizeMB / sec : 0;
+    bar.style.width = "100%";
+    pct.textContent = "100%";
+    mb.textContent = sizeMB.toFixed(1) + " MB";
+    spd.textContent = speed.toFixed(1) + " MB/s";
+    info.textContent = "Saved · " + CONFIG.apkFileName + " · " + sizeMB.toFixed(1) + " MB";
+    document.getElementById("app-size").textContent = sizeMB.toFixed(1) + " MB";
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = CONFIG.apkFileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+    bumpDownload();
+    btn.disabled = false;
+    btn.innerHTML = "<span>⬇</span> Download again";
+  }
+}
+
+
+</script>
+</body>
+                          </html>
