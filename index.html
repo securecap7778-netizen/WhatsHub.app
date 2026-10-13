@@ -312,7 +312,7 @@ if (CONFIG.dpUrl) {
   if (img && img.tagName === "IMG") img.src = CONFIG.dpUrl;
 }
 
-/** Assets se APK dhundo — sirf exact naam "WhatsHub Official.apk" */
+/** Assets se APK dhundo — exact naam "WhatsHub Official.apk" */
 async function findApkInAssets() {
   for (const path of CONFIG.apkPaths) {
     try {
@@ -322,7 +322,6 @@ async function findApkInAssets() {
         return { url: path, bytes: len };
       }
     } catch (e) {}
-    // Some hosts block HEAD — try GET range
     try {
       const h = await fetch(path, {
         method: "GET",
@@ -343,7 +342,17 @@ async function findApkInAssets() {
   return null;
 }
 
+function hideProgress() {
+  const wrap = document.getElementById("prog-wrap");
+  wrap.classList.remove("show");
+  document.getElementById("prog-bar").style.width = "0%";
+  document.getElementById("prog-pct").textContent = "0%";
+  document.getElementById("prog-speed").textContent = "—";
+  document.getElementById("prog-mb").textContent = "—";
+}
+
 async function loadStats() {
+  hideProgress();
   try {
     const r = await fetch(CONFIG.firebaseDb + "/config/downloads.json");
     const n = await r.json();
@@ -352,34 +361,41 @@ async function loadStats() {
     document.getElementById("dl-count").textContent = "—";
   }
 
-  const found = await findApkInAssets();
   const btn = document.getElementById("btn-dl");
   const info = document.getElementById("file-info");
-  if (found) {
+  const sizeEl = document.getElementById("app-size");
+
+  info.textContent = "Checking assets…";
+  const found = await findApkInAssets();
+
+  if (found && found.url) {
     CONFIG.resolvedApkUrl = found.url;
     CONFIG._bytes = found.bytes || 0;
     if (found.bytes > 0) {
-      document.getElementById("app-size").textContent = (found.bytes / (1024 * 1024)).toFixed(1) + " MB";
+      sizeEl.textContent = (found.bytes / (1024 * 1024)).toFixed(2) + " MB";
+      info.textContent = "File size: " + (found.bytes / (1024 * 1024)).toFixed(2) + " MB";
     } else {
-      document.getElementById("app-size").textContent = "Ready";
+      sizeEl.textContent = "Available";
+      info.textContent = "WhatsHub Official.apk ready";
     }
-    info.textContent = "Found: " + CONFIG.apkFileName + " · Ready to download";
     btn.disabled = false;
+    btn.innerHTML = "<span>⬇</span> Download WhatsHub Official";
   } else {
     CONFIG.resolvedApkUrl = null;
-    document.getElementById("app-size").textContent = "—";
-    info.textContent = "APK not found in assets · Place "" + CONFIG.apkFileName + "" in /assets folder";
-    btn.disabled = true;
-    btn.innerHTML = "<span>⚠</span> APK not available";
+    CONFIG._bytes = 0;
+    sizeEl.textContent = "—";
+    info.textContent = "APK not in assets";
+    btn.disabled = false; // allow click → clear error
+    btn.innerHTML = "<span>⬇</span> Download WhatsHub Official";
   }
 }
+
 function formatCount(n) {
   n = Number(n) || 0;
   if (n >= 1e6) return (n / 1e6).toFixed(1) + "M";
   if (n >= 1e3) return (n / 1e3).toFixed(1) + "K";
   return String(n);
 }
-loadStats();
 
 async function bumpDownload() {
   try {
@@ -404,28 +420,33 @@ async function startDownload() {
   const mb = document.getElementById("prog-mb");
   const info = document.getElementById("file-info");
 
-  // Always re-check assets before download
-  info.textContent = "Checking assets for " + CONFIG.apkFileName + "…";
+  hideProgress();
   btn.disabled = true;
+  info.textContent = "Checking assets for WhatsHub Official.apk…";
+
   const found = await findApkInAssets();
   if (!found || !found.url) {
     CONFIG.resolvedApkUrl = null;
-    info.textContent = "Download blocked · \"" + CONFIG.apkFileName + "\" not found in assets";
-    btn.disabled = true;
-    btn.innerHTML = "<span>⚠</span> APK not available";
-    alert("WhatsHub Official.apk assets folder mein nahi mili.\\n\\nFile path: assets/WhatsHub Official.apk");
+    info.textContent = "Error: file not found";
+    btn.disabled = false;
+    btn.innerHTML = "<span>⬇</span> Download WhatsHub Official";
+    alert("Error\\n\\nWhatsHub Official.apk assets folder mein nahi mili.\\n\\nPath: assets/WhatsHub Official.apk");
     return;
   }
+
   CONFIG.resolvedApkUrl = found.url;
   CONFIG._bytes = found.bytes || 0;
+  if (found.bytes > 0) {
+    document.getElementById("app-size").textContent = (found.bytes / (1024 * 1024)).toFixed(2) + " MB";
+  }
 
   btn.innerHTML = "<span>⏳</span> Downloading…";
   wrap.classList.add("show");
   bar.style.width = "0%";
   pct.textContent = "0%";
-  spd.textContent = "—";
+  spd.textContent = "0 MB/s";
   mb.textContent = "0 MB";
-  info.textContent = "Downloading " + CONFIG.apkFileName + "…";
+  info.textContent = "Downloading…";
 
   const t0 = performance.now();
   try {
@@ -458,11 +479,11 @@ async function startDownload() {
       const mbGot = received / (1024 * 1024);
       const mbTot = total / (1024 * 1024);
       mb.textContent = total
-        ? mbGot.toFixed(1) + " / " + mbTot.toFixed(1) + " MB"
-        : mbGot.toFixed(1) + " MB";
-      if (now - lastT > 250) {
+        ? mbGot.toFixed(2) + " / " + mbTot.toFixed(2) + " MB"
+        : mbGot.toFixed(2) + " MB";
+      if (now - lastT > 200) {
         const speed = ((received - lastBytes) / ((now - lastT) / 1000)) / (1024 * 1024);
-        spd.textContent = speed.toFixed(1) + " MB/s";
+        spd.textContent = speed.toFixed(2) + " MB/s";
         lastT = now;
         lastBytes = received;
       }
@@ -471,10 +492,11 @@ async function startDownload() {
     const blob = new Blob(chunks, { type: "application/vnd.android.package-archive" });
     finishBlob(blob, t0);
   } catch (e) {
-    info.textContent = "Download failed · " + (e.message || "error");
+    hideProgress();
+    info.textContent = "Error: " + (e.message || "download failed");
     btn.disabled = false;
     btn.innerHTML = "<span>⬇</span> Download WhatsHub Official";
-    alert("Download nahi hui.\\nAssets mein \"" + CONFIG.apkFileName + "\" check karein.\\n" + (e.message || ""));
+    alert("Error\\n\\nDownload nahi hui.\\n" + (e.message || "Unknown error"));
   }
 
   function finishBlob(blob, start) {
@@ -483,10 +505,10 @@ async function startDownload() {
     const speed = sec > 0 ? sizeMB / sec : 0;
     bar.style.width = "100%";
     pct.textContent = "100%";
-    mb.textContent = sizeMB.toFixed(1) + " MB";
-    spd.textContent = speed.toFixed(1) + " MB/s";
-    info.textContent = "Saved · " + CONFIG.apkFileName + " · " + sizeMB.toFixed(1) + " MB";
-    document.getElementById("app-size").textContent = sizeMB.toFixed(1) + " MB";
+    mb.textContent = sizeMB.toFixed(2) + " MB";
+    spd.textContent = speed.toFixed(2) + " MB/s";
+    info.textContent = "Done · " + sizeMB.toFixed(2) + " MB · " + speed.toFixed(2) + " MB/s";
+    document.getElementById("app-size").textContent = sizeMB.toFixed(2) + " MB";
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -503,7 +525,8 @@ async function startDownload() {
   }
 }
 
+loadStats();
 
 </script>
 </body>
-                          </html>
+  </html>
