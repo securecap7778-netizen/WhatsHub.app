@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>WhatsHub Official · Download</title>
+<title>WhatsHub Official V2.1 · Download</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -197,7 +197,7 @@ h1{
       <div class="verified" title="Verified">✓</div>
     </div>
     <h1>WhatsHub Official</h1>
-    <div class="version">Version <span id="app-version">V1.5</span></div>
+    <div class="version">Version <span id="app-version">V2.1</span></div>
     <div class="stats">
       <div class="stat">
         <b id="dl-count">—</b>
@@ -247,15 +247,25 @@ h1{
       <div class="feat"><span>💬</span> Private & group chat</div>
       <div class="feat"><span>📷</span> Photos & voice notes</div>
       <div class="feat"><span>✓ </span> Verified accounts</div>
-      <div class="feat"><span>🔔</span> Instant notifications</div>
+      <div class="feat"><span>🔔</span> Push notifications (app closed)</div>
+      <div class="feat"><span>📞</span> Voice call — Coming soon</div>
+      <div class="feat"><span>↗</span> Forwarded message label</div>
+      <div class="feat"><span>👉</span> Swipe to delete chat</div>
+      <div class="feat"><span>📇</span> Contacts + Invite to WhatsHub</div>
+      <div class="feat"><span>🔒</span> Number privacy (contacts only)</div>
+      <div class="feat"><span>📁</span> Save media to WhatsHub folders</div>
+      <div class="feat"><span>📢</span> Official announcements</div>
       <div class="feat"><span>🛡️</span> Block & report tools</div>
-      <div class="feat"><span>🔒</span> Two-step verification</div>
       <div class="feat"><span>👥</span> Official Contact us</div>
       <div class="feat"><span>🌙</span> Day / Night mode</div>
     </div>
     <p style="margin-top:14px">
       <b>Banned accounts:</b> Users who break the rules may be restricted or banned.
       A banned account can only contact <b>WhatsHub Official</b> for support.
+    </p>
+    <p style="margin-top:10px">
+      <b>Number privacy:</b> A registered user’s phone number is shown only if that number is saved in your contacts.
+      Otherwise you see their <b>name only</b> — numbers are not listed publicly.
     </p>
   </section>
 
@@ -286,15 +296,16 @@ h1{
  */
 const CONFIG = {
   appName: "WhatsHub Official",
-  version: "V1.5",
+  version: "V2.1",
   // Sirf yeh naam / paths — assets se check
-  apkFileName: "WhatsHub Official.apk",
+  apkFileName: "WhatsHub Official V2.1.apk",
   apkPaths: [
-    "assets/WhatsHub Official.apk",
-    "assets/WhatsHub%20Official.apk",
-    "./assets/WhatsHub Official.apk",
-    "WhatsHub Official.apk",
-    "./WhatsHub Official.apk"
+    "assets/WhatsHub Official V2.1.apk",
+    "assets/WhatsHub%20Official%20V2.1.apk",
+    "./assets/WhatsHub Official V2.1.apk",
+    "./assets/WhatsHub%20Official%20V2.1.apk",
+    "WhatsHub Official V2.1.apk",
+    "./WhatsHub Official V2.1.apk"
   ],
   firebaseDb: "https://waqar-trader-default-rtdb.firebaseio.com",
   dpUrl: "https://i.ibb.co/hFCZ1Z6y/ic-launcher.png",
@@ -312,7 +323,7 @@ if (CONFIG.dpUrl) {
   if (img && img.tagName === "IMG") img.src = CONFIG.dpUrl;
 }
 
-/** Assets se APK dhundo — exact naam "WhatsHub Official.apk" */
+/** Assets se APK dhundo — exact naam "WhatsHub Official V2.1.apk" */
 async function findApkInAssets() {
   for (const path of CONFIG.apkPaths) {
     try {
@@ -376,7 +387,7 @@ async function loadStats() {
       info.textContent = "File size: " + (found.bytes / (1024 * 1024)).toFixed(2) + " MB";
     } else {
       sizeEl.textContent = "Available";
-      info.textContent = "WhatsHub Official.apk ready";
+      info.textContent = "WhatsHub Official V2.1.apk ready";
     }
     btn.disabled = false;
     btn.innerHTML = "<span>⬇</span> Download WhatsHub Official";
@@ -422,7 +433,7 @@ async function startDownload() {
 
   hideProgress();
   btn.disabled = true;
-  info.textContent = "Checking assets for WhatsHub Official.apk…";
+  info.textContent = "Checking assets for WhatsHub Official V2.1.apk…";
 
   const found = await findApkInAssets();
   if (!found || !found.url) {
@@ -430,7 +441,7 @@ async function startDownload() {
     info.textContent = "Error: file not found";
     btn.disabled = false;
     btn.innerHTML = "<span>⬇</span> Download WhatsHub Official";
-    alert("Error\\n\\nWhatsHub Official.apk assets folder mein nahi mili.\\n\\nPath: assets/WhatsHub Official.apk");
+    alert("Error\\n\\nWhatsHub Official V2.1.apk assets folder mein nahi mili.\\n\\nPath: assets/WhatsHub Official V2.1.apk");
     return;
   }
 
